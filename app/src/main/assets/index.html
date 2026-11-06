@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12233b">
+<title>Berkah ASMR</title>
+<style>
+  :root{--bg:#0b1626;--card:#13233a;--line:#24405f;--txt:#e8f0fa;--mute:#91a8c4;--acc:#5fb3ff;--amber:#ffbe6e;--ok:#7be0a5;--bad:#ff8a8a}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 Roboto,"Segoe UI",Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+  header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#12233b;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+  header svg{flex:none}
+  header h1{margin:0;font-size:21px;letter-spacing:.5px;font-weight:900}
+  header p{margin:0;font-size:12px;color:var(--mute)}
+  nav{display:flex;background:#0f1d31;border-bottom:1px solid var(--line);position:sticky;top:67px;z-index:5}
+  nav button{flex:1;background:none;border:0;color:var(--mute);padding:12px 4px;font:600 14px inherit;font-family:inherit;border-bottom:3px solid transparent}
+  nav button.on{color:var(--txt);border-bottom-color:var(--acc)}
+  main{padding:14px 14px 120px;max-width:760px;margin:0 auto}
+  section{display:none}section.on{display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .card h2{margin:0 0 10px;font-size:15px}
+  label.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-bottom:1px dashed #1f3753}
+  label.row:last-child{border-bottom:0}
+  label.row span small{display:block;color:var(--mute);font-size:12px}
+  input[type=number]{width:84px;padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b1626;color:var(--txt);font:inherit;text-align:center}
+  input[type=text],select{width:100%;padding:10px;border-radius:9px;border:1px solid var(--line);background:#0b1626;color:var(--txt);font:inherit}
+  .chk{display:flex;gap:10px;align-items:flex-start;padding:7px 0}
+  .chk input{width:20px;height:20px;margin-top:2px;accent-color:var(--acc)}
+  .btn{display:block;width:100%;padding:14px;border-radius:12px;border:0;background:var(--acc);color:#04203d;font:800 16px inherit;font-family:inherit;margin-top:10px}
+  .btn.sec{background:#1d3757;color:var(--txt)}
+  .btn:disabled{opacity:.45}
+  .file{display:block;padding:16px;border:2px dashed var(--line);border-radius:12px;text-align:center;color:var(--mute)}
+  .file input{display:none}
+  .file b{color:var(--txt)}
+  .info{color:var(--mute);font-size:13px;margin-top:8px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  td,th{padding:6px 4px;border-bottom:1px solid #1f3753;text-align:left}
+  .ok{color:var(--ok)}.bad{color:var(--bad)}
+  audio{width:100%;margin-top:8px}
+  #status{position:fixed;left:0;right:0;bottom:0;background:#0f1d31;border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));z-index:9}
+  #barw{height:6px;background:#1d3757;border-radius:4px;overflow:hidden}
+  #bar{height:100%;width:0;background:var(--acc);transition:width .15s}
+  #stxt{font-size:13px;color:var(--mute);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thumbs{display:grid;gap:12px}
+  .thumbs figure{margin:0;background:#0b1626;border:1px solid var(--line);border-radius:12px;padding:10px}
+  .thumbs canvas{width:100%;height:auto;border-radius:8px;display:block}
+  .thumbs .small{width:168px;margin-top:8px}
+  .thumbs figcaption{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:700}
+  .thumbs figcaption button{background:#1d3757;color:var(--txt);border:0;border-radius:8px;padding:8px 12px;font:600 13px inherit;font-family:inherit}
+  .guide ol{padding-left:20px;margin:6px 0}.guide li{margin:6px 0}
+  .pill{display:inline-block;background:#1d3757;border-radius:20px;padding:2px 10px;font-size:12px;color:var(--mute)}
+</style>
+</head>
+<body>
+<header>
+  <svg width="40" height="46" viewBox="0 0 46 54" aria-hidden="true">
+    <polygon points="23,4 9,28 37,28" fill="#5fb3ff"/><circle cx="23" cy="31" r="14" fill="#5fb3ff"/>
+    <ellipse cx="18" cy="31" rx="3" ry="4.5" fill="#cfe8ff"/>
+  </svg>
+  <div><h1>BERKAH ASMR</h1><p>by Aziez Zembut • Rain ASMR Studio Mobile 1.1</p></div>
+</header>
+<nav>
+  <button data-tab="audio" class="on">🎧 Audio</button>
+  <button data-tab="thumb">🖼️ Thumbnail</button>
+  <button data-tab="help">ℹ️ Panduan</button>
+</nav>
+<main>
+<!-- ================= AUDIO ================= -->
+<section id="audio" class="on">
+  <div class="card">
+    <label class="file" id="aDrop"><input type="file" id="aFile" accept="audio/*,video/*">
+      <b>📂 Pilih rekaman hujan</b><br><small>Rekaman HP (M4A/MP3/WAV) atau video. Maksimal 10 menit diproses.</small></label>
+    <div class="info" id="aInfo">Belum ada file.</div>
+  </div>
+  <div class="card">
+    <h2>Pengaturan ASMR</h2>
+    <select id="preset"></select>
+    <label class="row"><span>Ambang deteksi (dB)<small>Kecil = lebih sensitif</small></span><input type="number" id="pTh" step="0.5"></label>
+    <label class="row"><span>Potong frekuensi rendah (Hz)<small>Dengung angin/getaran</small></span><input type="number" id="pHp" step="5"></label>
+    <label class="row"><span>Kehangatan (dB)<small>Kurangi desis tajam</small></span><input type="number" id="pW" step="0.5"></label>
+    <label class="row"><span>Target loudness (LUFS)<small>-17 s/d -19 nyaman tidur</small></span><input type="number" id="pL" step="0.5"></label>
+    <label class="row"><span>Crossfade loop (detik)<small>Lebih panjang = lebih halus</small></span><input type="number" id="pX" step="1"></label>
+    <div class="chk"><input type="checkbox" id="pCut" checked><label for="pCut">Buang bagian keras otomatis (disambung halus)</label></div>
+    <div class="chk"><input type="checkbox" id="pWide"><label for="pWide">Mono → Stereo lebar (efek 3D di headphone)</label></div>
+  </div>
+  <button class="btn" id="bAnalyze">① Analisis suara kaget</button>
+  <button class="btn" id="bMaster">② Buat Master Loop</button>
+  <div class="card" id="evCard" style="display:none;margin-top:12px"><h2>Hasil analisis</h2><div id="evList"></div></div>
+  <div class="card" id="mCard" style="display:none;margin-top:12px">
+    <h2>✔ Master loop siap</h2>
+    <div class="info" id="mInfo"></div>
+    <div style="margin-top:10px"><span class="pill">Tes sambungan loop — titik sambungan di detik 0:15</span></div>
+    <audio id="seam" controls></audio>
+    <button class="btn" id="bSave">💾 Simpan Master Loop (WAV)</button>
+    <div class="info">Kirim file WAV ini ke PC, lalu render video 8–10 jam di Rain ASMR Studio (Windows), tab 2.</div>
+  </div>
+</section>
+
+<!-- ================= THUMBNAIL ================= -->
+<section id="thumb">
+  <div class="card">
+    <label class="file"><input type="file" id="tFile" accept="image/*,video/*">
+      <b>📂 Pilih video atau gambar</b><br><small>Dari video: otomatis dipilih 3 frame paling tajam.</small></label>
+    <div class="info" id="tInfo">Belum ada file.</div>
+  </div>
+  <div class="card">
+    <h2>Teks & Gaya</h2>
+    <label>Teks utama (2–3 kata)</label><input type="text" id="tTitle" value="Tin Roof Rain">
+    <div style="height:8px"></div>
+    <label>Teks kecil</label><input type="text" id="tSub" value="10 Hours • Dark Screen">
+    <div style="height:8px"></div>
+    <label>Gaya channel</label><select id="tStyle"></select>
+    <label class="row" style="margin-top:6px"><span>Kecerahan (%)<small>100 = normal</small></span><input type="number" id="tBright" value="100" step="10"></label>
+    <div class="chk"><input type="checkbox" id="tRain" checked><label for="tRain">Efek garis hujan</label></div>
+  </div>
+  <button class="btn" id="bThumb">④ Buat 3 Variasi Thumbnail</button>
+  <div class="thumbs" id="thumbs" style="margin-top:12px"></div>
+</section>
+
+<!-- ================= PANDUAN ================= -->
+<section id="help" class="guide">
+  <div class="card"><h2>🎧 Audio</h2><ol>
+    <li>Rekam hujan dengan HP (5–10 menit hujan stabil, jauhkan dari kipas/kendaraan).</li>
+    <li>Pilih rekaman, pilih preset yang sesuai.</li>
+    <li>Tekan <b>Analisis</b> untuk melihat menit:detik suara kaget.</li>
+    <li>Tekan <b>Buat Master Loop</b>, dengarkan tes sambungan, lalu <b>Simpan</b>.</li>
+    <li>File tersimpan di folder <b>Download/BerkahASMR</b>.</li></ol></div>
+  <div class="card"><h2>🖼️ Thumbnail</h2><ol>
+    <li>Pilih video rekaman (paling otentik) atau gambar.</li>
+    <li>Isi teks utama 2–3 kata dan teks kecil.</li>
+    <li>Pilih gaya channel, tekan <b>Buat 3 Variasi</b>, lalu simpan.</li>
+    <li>Upload ketiganya ke <b>Test &amp; Compare</b> di YouTube Studio.</li></ol></div>
+  <div class="card"><h2>💻 Alur kerja HP + PC</h2><ol>
+    <li>HP: rekam → bersihkan & buat master loop → buat thumbnail.</li>
+    <li>PC: render video 8–10 jam di Rain ASMR Studio (Windows).</li>
+    <li>Upload ke YouTube dengan judul & deskripsi dari file Excel.</li></ol>
+    <div class="info">Render video berjam-jam terlalu berat untuk HP, jadi bagian itu tetap di PC.</div></div>
+</section>
+</main>
+<div id="status"><div id="barw"><div id="bar"></div></div><div id="stxt">Siap.</div></div>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const tick = () => new Promise(r => setTimeout(r, 0));
+const MAX_SEC = 600;
+
+// ---------------- tabs
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("on", s.id === b.dataset.tab));
+  window.scrollTo(0, 0);
+});
+
+// ---------------- status
+let busy = false;
+function prog(f, t) { $("#bar").style.width = Math.max(0, Math.min(1, f)) * 100 + "%"; if (t) $("#stxt").textContent = t; }
+function toast(m) { if (window.AndroidBridge && AndroidBridge.toast) AndroidBridge.toast(m); prog(1, m); }
+async function run(fn) {
+  if (busy) { toast("Masih memproses, tunggu sebentar..."); return; }
+  busy = true; document.querySelectorAll(".btn").forEach(b => b.disabled = true);
+  try { await fn(); }
+  catch (e) { console.error(e); prog(0, "✖ " + (e && e.message ? e.message : e)); alert("Gagal: " + (e && e.message ? e.message : e)); }
+  finally { busy = false; document.querySelectorAll(".btn").forEach(b => b.disabled = false); }
+}
+const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+  return (h ? h + ":" + String(m).padStart(2, "0") : String(m).padStart(2, "0")) + ":" + String(x).padStart(2, "0"); };
+
+// ---------------- save (Android bridge, or browser download)
+function b64(u8) { let s = ""; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); }
+async function saveBlob(blob, name, mime) {
+  if (window.AndroidBridge && AndroidBridge.begin) {
+    if (!AndroidBridge.begin(name, mime)) throw new Error("Tidak bisa membuat file di penyimpanan.");
+    const CH = 3 * 1024 * 1024;
+    for (let o = 0; o < blob.size; o += CH) {
+      const u8 = new Uint8Array(await blob.slice(o, o + CH).arrayBuffer());
+      if (!AndroidBridge.chunk(b64(u8))) throw new Error("Gagal menulis file.");
+      prog(o / blob.size, "Menyimpan " + name + "... " + Math.round(o / blob.size * 100) + "%");
+      await tick();
+    }
+    const where = AndroidBridge.end();
+    toast("✔ Tersimpan: " + where);
+    return where;
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 60000);
+  prog(1, "✔ Diunduh: " + name); return name;
+}
+
+// =====================================================================
+// AUDIO
+// =====================================================================
+const PRESETS = {
+  "Hujan Deras / Atap Seng": { th: 9, hp: 40, w: 3, l: -17, x: 8 },
+  "Hujan Lembut / Daun / Jendela": { th: 8, hp: 50, w: 2, l: -19, x: 8 },
+  "Badai & Petir (petir dibiarkan)": { th: 14, hp: 30, w: 3, l: -18, x: 10 },
+  "Sungai / Air Terjun / Arus": { th: 10, hp: 40, w: 4, l: -18, x: 6 },
+  "Hujan + Serangga / Katak Malam": { th: 11, hp: 45, w: 2.5, l: -19, x: 8 },
+};
+const preset = $("#preset");
+Object.keys(PRESETS).forEach(k => preset.add(new Option(k, k)));
+function applyPreset() { const p = PRESETS[preset.value]; $("#pTh").value = p.th; $("#pHp").value = p.hp; $("#pW").value = p.w; $("#pL").value = p.l; $("#pX").value = p.x; }
+preset.onchange = applyPreset; applyPreset();
+const P = () => ({ th: +$("#pTh").value, hp: +$("#pHp").value, w: +$("#pW").value, l: +$("#pL").value, x: +$("#pX").value });
+
+const A = { file: null, buf: null, events: null, evTh: null, master: null, name: "rekaman" };
+
+$("#aFile").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  A.file = f; A.buf = null; A.events = null; A.master = null;
+  A.name = (f.name.replace(/\.[^.]+$/, "").replace(/[^\w\-]+/g, "_").replace(/^_+|_+$/g, "")) || "rekaman";
+  $("#evCard").style.display = "none"; $("#mCard").style.display = "none";
+  $("#aInfo").textContent = f.name + " • " + (f.size / 1048576).toFixed(1) + " MB";
+  run(loadAudio);
+};
+
+async function loadAudio() {
+  if (A.buf) return A.buf;
+  if (!A.file) throw new Error("Pilih rekaman dulu.");
+  prog(0.05, "Membaca file...");
+  const ab = await A.file.arrayBuffer();
+  prog(0.2, "Mendekode audio (bisa beberapa detik)...");
+  let buf;
+  try { buf = await new OfflineAudioContext(2, 44100, 44100).decodeAudioData(ab); }
+  catch (e) { throw new Error("Format audio tidak bisa dibaca. Coba simpan rekaman sebagai M4A/MP3/WAV."); }
+  let note = "";
+  if (buf.duration > MAX_SEC + 1) {
+    const n = MAX_SEC * buf.sampleRate, cut = new AudioBuffer({ length: n, numberOfChannels: buf.numberOfChannels, sampleRate: buf.sampleRate });
+    for (let c = 0; c < buf.numberOfChannels; c++) cut.copyToChannel(buf.getChannelData(c).subarray(0, n), c);
+    note = " • dipotong ke 10 menit pertama (rekaman lebih panjang → pakai versi PC)";
+    buf = cut;
+  }
+  A.buf = buf;
+  const ch = buf.numberOfChannels === 1 ? "MONO" : "STEREO";
+  $("#pWide").checked = buf.numberOfChannels === 1;
+  $("#aInfo").textContent = `${A.file.name} • ${fmt(buf.duration)} • ${ch}${buf.numberOfChannels === 1 ? " • stereo lebar dinyalakan" : ""}${note}`;
+  prog(1, "File siap: " + fmt(buf.duration));
+  return buf;
+}
+
+// ---- biquad (RBJ cookbook), in-place
+function biquad(type, f, sr, gainDb, Q) {
+  const w = 2 * Math.PI * f / sr, cs = Math.cos(w), sn = Math.sin(w), al = sn / (2 * Q), A = Math.pow(10, gainDb / 40), sq = 2 * Math.sqrt(A) * al;
+  let b0, b1, b2, a0, a1, a2;
+  if (type === "hp") { b0 = (1 + cs) / 2; b1 = -(1 + cs); b2 = b0; a0 = 1 + al; a1 = -2 * cs; a2 = 1 - al; }
+  else if (type === "lp") { b0 = (1 - cs) / 2; b1 = 1 - cs; b2 = b0; a0 = 1 + al; a1 = -2 * cs; a2 = 1 - al; }
+  else if (type === "ls") { b0 = A * ((A + 1) - (A - 1) * cs + sq); b1 = 2 * A * ((A - 1) - (A + 1) * cs); b2 = A * ((A + 1) - (A - 1) * cs - sq);
+    a0 = (A + 1) + (A - 1) * cs + sq; a1 = -2 * ((A - 1) + (A + 1) * cs); a2 = (A + 1) + (A - 1) * cs - sq; }
+  else { b0 = A * ((A + 1) + (A - 1) * cs + sq); b1 = -2 * A * ((A - 1) + (A + 1) * cs); b2 = A * ((A + 1) + (A - 1) * cs - sq);
+    a0 = (A + 1) - (A - 1) * cs + sq; a1 = 2 * ((A - 1) - (A + 1) * cs); a2 = (A + 1) - (A - 1) * cs - sq; }
+  return { b0: b0 / a0, b1: b1 / a0, b2: b2 / a0, a1: a1 / a0, a2: a2 / a0 };
+}
+function filt(x, c, out) { // out may equal x (in-place)
+  out = out || x; let z1 = 0, z2 = 0; const { b0, b1, b2, a1, a2 } = c;
+  for (let i = 0, n = x.length; i < n; i++) { const v = x[i], y = b0 * v + z1; z1 = b1 * v - a1 * y + z2; z2 = b2 * v - a2 * y; out[i] = y; }
+  return out;
+}
+
+// ---- 1. analysis
+async function analyze(th) {
+  const buf = await loadAudio();
+  prog(0.1, "Menganalisis...");
+  const sr = 8000, len = Math.ceil(buf.duration * sr);
+  const oc = new OfflineAudioContext(1, len, sr); const s = oc.createBufferSource(); s.buffer = buf; s.connect(oc.destination); s.start();
+  const mono = (await oc.startRendering()).getChannelData(0);
+  prog(0.5, "Menghitung...");
+  const band = new Float32Array(mono.length);
+  filt(mono, biquad("hp", 300, sr, 0, 0.707), band); filt(band, biquad("lp", 3400, sr, 0, 0.707));
+  const win = sr / 4, n = Math.floor(mono.length / win);
+  if (n < 40) throw new Error("Rekaman terlalu pendek (minimal ±10 detik).");
+  const full = new Float64Array(n), bd = new Float64Array(n);
+  for (let k = 0; k < n; k++) {
+    let a = 0, b = 0; const o = k * win;
+    for (let i = 0; i < win; i++) { const v = mono[o + i], u = band[o + i]; a += v * v; b += u * u; }
+    full[k] = 10 * Math.log10(a / win + 1e-12); bd[k] = 10 * Math.log10(b / win + 1e-12);
+  }
+  const base = v => { const idx = [], med = []; for (let i = 0; i < v.length; i += 240) { const sg = Array.from(v.slice(i, i + 240)).sort((p, q) => p - q);
+      idx.push(i + sg.length / 2); med.push(sg[sg.length >> 1]); }
+    const out = new Float64Array(v.length);
+    for (let i = 0; i < v.length; i++) { let j = 0; while (j < idx.length - 1 && idx[j + 1] < i) j++;
+      if (idx.length === 1 || i <= idx[0]) out[i] = med[0]; else if (i >= idx[idx.length - 1]) out[i] = med[med.length - 1];
+      else { const t = (i - idx[j]) / (idx[j + 1] - idx[j]); out[i] = med[j] + t * (med[j + 1] - med[j]); } }
+    return out; };
+  const bf = base(full), bb = base(bd);
+  const exF = full.map((v, i) => v - bf[i]), exB = bd.map((v, i) => v - bb[i]);
+  const runs = []; let i = 0;
+  while (i < n) { if (Math.max(exF[i], exB[i]) > th) { let j = i; while (j + 1 < n && Math.max(exF[j + 1], exB[j + 1]) > th) j++; runs.push([i, j]); i = j + 1; } else i++; }
+  const merged = []; for (const r of runs) { if (merged.length && r[0] - merged[merged.length - 1][1] <= 8) merged[merged.length - 1][1] = r[1]; else merged.push(r.slice()); }
+  const ev = merged.map(([a, b]) => { let mf = -1e9, mb = -1e9; for (let k = a; k <= b; k++) { mf = Math.max(mf, exF[k]); mb = Math.max(mb, exB[k]); }
+    return { start: Math.max(0, a * 0.25 - 1), end: Math.min(buf.duration, (b + 1) * 0.25 + 1), db: Math.max(mf, mb), kind: mb >= mf ? "suara/anjing/kendaraan" : "dentuman/petir/benturan" }; });
+  A.events = ev; A.evTh = th;
+  showEvents(ev);
+  prog(1, "Analisis selesai: " + ev.length + " bagian keras");
+  return ev;
+}
+function showEvents(ev) {
+  const tot = ev.reduce((s, e) => s + e.end - e.start, 0);
+  let h = ev.length ? `<p class="bad">${ev.length} bagian keras (total ${fmt(tot)})</p><table><tr><th>#</th><th>Mulai</th><th>Selesai</th><th>Keras</th><th>Jenis</th></tr>` +
+    ev.map((e, k) => `<tr><td>${k + 1}</td><td>${fmt(e.start)}</td><td>${fmt(e.end)}</td><td>+${e.db.toFixed(1)} dB</td><td>${e.kind}</td></tr>`).join("") + "</table>" +
+    `<p class="info">Terlalu banyak? Naikkan ambang deteksi. Ada yang lolos? Turunkan.</p>`
+    : `<p class="ok">✔ Tidak ada suara kaget terdeteksi. Rekaman bersih!</p>`;
+  $("#evList").innerHTML = h; $("#evCard").style.display = "block";
+}
+$("#bAnalyze").onclick = () => run(() => analyze(P().th));
+
+// ---- 2. master
+function keepSegs(dur, ev, minLen) { const k = []; let t = 0;
+  for (const e of [...ev].sort((a, b) => a.start - b.start)) { if (e.start - t >= minLen) k.push([t, e.start]); t = Math.max(t, e.end); }
+  if (dur - t >= minLen) k.push([t, dur]); return k; }
+function joinSegs(ch, segs, sr, xfSec) {
+  const xf = Math.round(xfSec * sr), parts = segs.map(([a, b]) => [Math.round(a * sr), Math.min(ch.length, Math.round(b * sr))]);
+  const total = parts.reduce((s, [a, b]) => s + (b - a), 0) - xf * (parts.length - 1), out = new Float32Array(total);
+  let pos = 0;
+  parts.forEach(([a, b], k) => {
+    if (k === 0) { out.set(ch.subarray(a, b), 0); pos = b - a; return; }
+    const st = pos - xf;
+    for (let i = 0; i < xf; i++) { const t = (i + 0.5) / xf; out[st + i] = out[st + i] * Math.cos(t * Math.PI / 2) + ch[a + i] * Math.sin(t * Math.PI / 2); }
+    out.set(ch.subarray(a + xf, b), pos); pos = st + (b - a);
+  });
+  return out;
+}
+function lufs(chs, sr) { // ITU-R BS.1770 (pendekatan K-weighting)
+  const sub = Math.round(sr * 0.1), nb = Math.floor(chs[0].length / sub), sums = new Float64Array(nb);
+  const k1 = biquad("hs", 1681.97, sr, 4.0, 0.7072), k2 = biquad("hp", 38.135, sr, 0, 0.5003);
+  for (const x of chs) {
+    let z1 = 0, z2 = 0, y1 = 0, y2 = 0;
+    for (let b = 0; b < nb; b++) { let acc = 0;
+      for (let i = b * sub, e = i + sub; i < e; i++) { const v = x[i];
+        const u = k1.b0 * v + z1; z1 = k1.b1 * v - k1.a1 * u + z2; z2 = k1.b2 * v - k1.a2 * u;
+        const w = k2.b0 * u + y1; y1 = k2.b1 * u - k2.a1 * w + y2; y2 = k2.b2 * u - k2.a2 * w; acc += w * w; }
+      sums[b] += acc / sub; }
+  }
+  const blocks = []; for (let b = 0; b + 4 <= nb; b++) blocks.push((sums[b] + sums[b + 1] + sums[b + 2] + sums[b + 3]) / 4);
+  const L = m => -0.691 + 10 * Math.log10(m + 1e-15);
+  let g = blocks.filter(m => L(m) > -70); if (!g.length) return -70;
+  const rel = L(g.reduce((s, m) => s + m, 0) / g.length) - 10; g = g.filter(m => L(m) > rel);
+  return L(g.reduce((s, m) => s + m, 0) / g.length);
+}
+function limiter(chs, sr, thr) { // look-ahead 5 ms, release 80 ms, per 1 ms
+  const blk = Math.max(1, Math.round(sr / 1000)), n = chs[0].length, nb = Math.ceil(n / blk), tgt = new Float32Array(nb);
+  for (let b = 0; b < nb; b++) { let pk = 0; for (const x of chs) for (let i = b * blk, e = Math.min(n, i + blk); i < e; i++) { const a = Math.abs(x[i]); if (a > pk) pk = a; }
+    tgt[b] = pk > thr ? thr / pk : 1; }
+  const la = 5, g = new Float32Array(nb), rel = 1 - Math.exp(-1 / 80); let env = 1;
+  for (let b = 0; b < nb; b++) { let m = 1; for (let k = b; k < Math.min(nb, b + la + 1); k++) if (tgt[k] < m) m = tgt[k];
+    env = m < env ? m : env + (m - env) * rel; g[b] = env; }
+  let reduced = 0;
+  for (const x of chs) for (let b = 0; b < nb; b++) { const g0 = g[b], g1 = b + 1 < nb ? g[b + 1] : g0; if (g0 < 0.999) reduced++;
+    for (let i = b * blk, e = Math.min(n, i + blk), j = 0; i < e; i++, j++) x[i] *= g0 + (g1 - g0) * j / blk; }
+  return reduced / chs.length;
+}
+async function makeMaster() {
+  const p = P(); let buf = await loadAudio(); const sr = buf.sampleRate, dur = buf.duration;
+  if ($("#pCut").checked && (!A.events || A.evTh !== p.th)) await analyze(p.th);
+  const ev = $("#pCut").checked ? (A.events || []) : [];
+  const segs = ev.length ? keepSegs(dur, ev, 3) : [[0, dur]];
+  if (!segs.length) throw new Error("Semua bagian terdeteksi keras. Naikkan ambang deteksi.");
+  prog(0.05, "Tahap 1/4: membersihkan (" + segs.length + " bagian)...");
+  await tick();
+  let chs = [];
+  for (let c = 0; c < Math.min(2, buf.numberOfChannels); c++) {
+    const src = buf.getChannelData(c);
+    chs.push(segs.length === 1 && segs[0][0] === 0 && segs[0][1] === dur ? src.slice() : joinSegs(src, segs, sr, 1.0));
+  }
+  if (chs.length === 1) {
+    const x = chs[0], off = Math.round(7 * sr);
+    if ($("#pWide").checked && x.length > off * 3) chs = [x.subarray(0, x.length - off), x.slice(off)];
+    else chs = [x, x.slice()];
+  }
+  prog(0.25, "Tahap 2/4: EQ (potong rendah, kehangatan)..."); await tick();
+  const fl = [biquad("hp", p.hp, sr, 0, 0.707)];
+  if (p.w > 0) fl.push(biquad("ls", 150, sr, p.w / 2, 0.707), biquad("hs", 7000, sr, -p.w, 0.707));
+  for (const x of chs) for (const c of fl) filt(x, c);
+  prog(0.45, "Tahap 3/4: menyamakan volume..."); await tick();
+  const before = lufs(chs, sr), gain = Math.pow(10, (p.l - before) / 20);
+  for (const x of chs) for (let i = 0; i < x.length; i++) x[i] *= gain;
+  const red = limiter(chs, sr, Math.pow(10, -1.5 / 20));
+  const after = lufs(chs, sr);
+  prog(0.75, "Tahap 4/4: membuat loop mulus..."); await tick();
+  const X = Math.round(p.x * sr), L = chs[0].length;
+  if (L < 3 * X + 5 * sr) throw new Error(`Audio bersih hanya ${Math.round(L / sr)} detik. Minimal ${Math.round(3 * p.x + 5)} detik.`);
+  const U = chs.map(x => { const u = new Float32Array(L - X); u.set(x.subarray(X, L - X), 0); const st = L - 2 * X;
+    for (let i = 0; i < X; i++) { const t = (i + 0.5) / X; u[st + i] = x[L - X + i] * Math.cos(t * Math.PI / 2) + x[i] * Math.sin(t * Math.PI / 2); }
+    return u; });
+  chs = null; A.buf = buf; buf = null;
+  A.master = { chs: U, sr };
+  const each = Math.min(15 * sr, Math.floor(U[0].length / 2));
+  const seam = U.map(u => { const s = new Float32Array(each * 2); s.set(u.subarray(u.length - each), 0); s.set(u.subarray(0, each), each); return s; });
+  $("#seam").src = URL.createObjectURL(wavBlob(seam, sr));
+  $("#mInfo").innerHTML = `Panjang 1 putaran: <b>${fmt(U[0].length / sr)}</b> • ${segs.length > 1 ? (segs.length - 1) + " sambungan potong, " : ""}` +
+    `loudness ${before.toFixed(1)} → <b>${after.toFixed(1)} LUFS</b> • limiter aktif ${(red / 10).toFixed(1)} detik`;
+  $("#mCard").style.display = "block";
+  $("#mCard").scrollIntoView({ behavior: "smooth" });
+  prog(1, "✔ Master loop selesai");
+}
+function wavBlob(chs, sr) {
+  const nc = chs.length, n = chs[0].length, bytes = n * nc * 2, h = new DataView(new ArrayBuffer(44));
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) h.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, "RIFF"); h.setUint32(4, 36 + bytes, true); w(8, "WAVE"); w(12, "fmt "); h.setUint32(16, 16, true); h.setUint16(20, 1, true);
+  h.setUint16(22, nc, true); h.setUint32(24, sr, true); h.setUint32(28, sr * nc * 2, true); h.setUint16(32, nc * 2, true); h.setUint16(34, 16, true);
+  w(36, "data"); h.setUint32(40, bytes, true);
+  const parts = [h.buffer], CH = sr * 10;
+  for (let o = 0; o < n; o += CH) { const m = Math.min(CH, n - o), a = new Int16Array(m * nc);
+    for (let i = 0; i < m; i++) for (let c = 0; c < nc; c++) { let v = chs[c][o + i]; v = v < -1 ? -1 : v > 1 ? 1 : v; a[i * nc + c] = v < 0 ? v * 32768 : v * 32767; }
+    parts.push(a.buffer); }
+  return new Blob(parts, { type: "audio/wav" });
+}
+$("#bMaster").onclick = () => run(makeMaster);
+$("#bSave").onclick = () => run(async () => {
+  if (!A.master) throw new Error("Buat master loop dulu.");
+  prog(0.02, "Menyiapkan WAV..."); await tick();
+  await saveBlob(wavBlob(A.master.chs, A.master.sr), A.name + "_MASTER_LOOP.wav", "audio/wav");
+});
+
+// =====================================================================
+// THUMBNAIL
+// =====================================================================
+const W = 1280, H = 720;
+const STY = {
+  "Pure Blessings Rain (biru gelap + amber)": { b: .55, c: 1.12, s: .85, tint: [110, 145, 235], mix: .45, glow: [255, 160, 60], gA: .6, acc: "#ffbe6e", mist: false },
+  "Rainy Chum (hijau/teal + kabut)": { b: .72, c: 1.08, s: 1.05, tint: [110, 215, 185], mix: .3, glow: [225, 255, 240], gA: .25, acc: "#96ffd2", mist: true },
+  "Gelap Netral (black screen)": { b: .45, c: 1.1, s: .7, tint: null, mix: 0, glow: [255, 170, 80], gA: .4, acc: "#ffffff", mist: false },
+};
+Object.keys(STY).forEach(k => $("#tStyle").add(new Option(k, k)));
+const T = { file: null, name: "video" };
+$("#tFile").onchange = e => { const f = e.target.files[0]; if (!f) return; T.file = f;
+  T.name = (f.name.replace(/\.[^.]+$/, "").replace(/[^\w\-]+/g, "_").replace(/^_+|_+$/g, "")) || "video";
+  $("#tInfo").textContent = f.name + " • " + (f.size / 1048576).toFixed(1) + " MB"; };
+
+const mkCanvas = (w, h) => { const c = document.createElement("canvas"); c.width = w; c.height = h; return c; };
+const once = (el, ev) => new Promise((res, rej) => { const ok = () => { cl(); res(); }, bad = () => { cl(); rej(new Error("Gagal membaca media.")); };
+  const cl = () => { el.removeEventListener(ev, ok); el.removeEventListener("error", bad); }; el.addEventListener(ev, ok); el.addEventListener("error", bad); });
+function cover(src, sw, sh, zoom = 1, fx = .5, fy = .5) {
+  const c = mkCanvas(W, H), x = c.getContext("2d"), sc = Math.max(W / sw, H / sh) * zoom, dw = sw * sc, dh = sh * sc;
+  x.drawImage(src, -(dw - W) * fx, -(dh - H) * fy, dw, dh); return c;
+}
+function sharpness(src, sw, sh) {
+  const c = mkCanvas(320, 180), x = c.getContext("2d"); x.drawImage(src, 0, 0, sw, sh, 0, 0, 320, 180);
+  const d = x.getImageData(0, 0, 320, 180).data, g = new Float32Array(320 * 180); let mean = 0;
+  for (let i = 0; i < g.length; i++) { g[i] = .299 * d[i * 4] + .587 * d[i * 4 + 1] + .114 * d[i * 4 + 2]; mean += g[i]; } mean /= g.length;
+  let s = 0, s2 = 0, n = 0;
+  for (let y = 1; y < 179; y++) for (let xx = 1; xx < 319; xx++) { const i = y * 320 + xx, l = 4 * g[i] - g[i - 1] - g[i + 1] - g[i - 320] - g[i + 320]; s += l; s2 += l * l; n++; }
+  let v = s2 / n - (s / n) ** 2; if (mean < 18 || mean > 235) v *= .2; return v;
+}
+async function sources() {
+  if (!T.file) throw new Error("Pilih video atau gambar dulu.");
+  const url = URL.createObjectURL(T.file);
+  if (T.file.type.startsWith("image/") || /\.(jpe?g|png|webp|bmp)$/i.test(T.file.name)) {
+    const im = new Image(); im.src = url; await once(im, "load");
+    return [[cover(im, im.naturalWidth, im.naturalHeight), "gambar penuh"], [cover(im, im.naturalWidth, im.naturalHeight, 1.15, .65, .5), "zoom kanan"],
+            [cover(im, im.naturalWidth, im.naturalHeight, 1.3, .4, .45), "zoom tengah"]];
+  }
+  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = url;
+  await once(v, "loadedmetadata");
+  const dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 10, N = 12, best = [];
+  for (let i = 0; i < N; i++) {
+    v.currentTime = dur * (i + .5) / N; await once(v, "seeked");
+    const sc = sharpness(v, v.videoWidth, v.videoHeight);
+    best.push([sc, v.currentTime, cover(v, v.videoWidth, v.videoHeight)]); best.sort((a, b) => b[0] - a[0]); if (best.length > 3) best.pop();
+    prog((i + 1) / N * .6, "Memilih frame terbaik " + (i + 1) + "/" + N);
+  }
+  URL.revokeObjectURL(url);
+  while (best.length < 3) best.push(best[0]);
+  return best.map(b => [b[2], "frame " + fmt(b[1])]);
+}
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function brightest(c) {
+  const s = mkCanvas(128, 72), x = s.getContext("2d"); x.filter = "blur(3px)"; x.drawImage(c, 0, 0, 128, 72);
+  const d = x.getImageData(0, 0, 128, 72).data; let bi = 0, bv = -1;
+  for (let i = 0; i < 128 * 72; i++) { let v = d[i * 4] + d[i * 4 + 1] + d[i * 4 + 2]; if (i % 128 < 40) v *= .6; if (v > bv) { bv = v; bi = i; } }
+  return [(bi % 128) / 128 * W, Math.floor(bi / 128) / 72 * H];
+}
+function grade(c, st, rain, bs, seed) {
+  const x = c.getContext("2d"), [gx, gy] = brightest(c), id = x.getImageData(0, 0, W, H), d = id.data, b = st.b * bs;
+  let mean = 0; for (let i = 0; i < d.length; i += 16) mean += .299 * d[i] + .587 * d[i + 1] + .114 * d[i + 2]; mean = mean / (d.length / 16) * b;
+  const R = W * .45, [tr, tg, tb] = st.tint || [255, 255, 255], [lr, lg, lb] = st.glow;
+  for (let y = 0, i = 0; y < H; y++) { const mist = st.mist ? (y / H) ** 2 * .28 : 0;
+    for (let xx = 0; xx < W; xx++, i += 4) {
+      let r = d[i] * b, g = d[i + 1] * b, bl = d[i + 2] * b;
+      r = mean + (r - mean) * st.c; g = mean + (g - mean) * st.c; bl = mean + (bl - mean) * st.c;
+      const gr = .299 * r + .587 * g + .114 * bl; r = gr + (r - gr) * st.s; g = gr + (g - gr) * st.s; bl = gr + (bl - gr) * st.s;
+      if (st.tint) { r += (r * tr / 255 * 1.35 - r) * st.mix; g += (g * tg / 255 * 1.35 - g) * st.mix; bl += (bl * tb / 255 * 1.35 - bl) * st.mix; }
+      r = r < 0 ? 0 : r > 255 ? 255 : r; g = g < 0 ? 0 : g > 255 ? 255 : g; bl = bl < 0 ? 0 : bl > 255 ? 255 : bl;
+      const dist = Math.hypot(xx - gx, y - gy) / R; if (dist < 1) { const m = st.gA * (1 - dist) ** 1.6;
+        r += (255 - (255 - r) * (255 - lr) / 255 - r) * m; g += (255 - (255 - g) * (255 - lg) / 255 - g) * m; bl += (255 - (255 - bl) * (255 - lb) / 255 - bl) * m; }
+      if (mist) { r += (235 - r) * mist; g += (245 - g) * mist; bl += (245 - bl) * mist; }
+      d[i] = r; d[i + 1] = g; d[i + 2] = bl; } }
+  x.putImageData(id, 0, 0);
+  if (rain) { const rnd = rng(seed + 7); x.save(); x.lineWidth = 1.1; x.lineCap = "round";
+    for (let k = 0; k < 900; k++) { const px = rnd() * (W + 100) - 100, py = rnd() * (H + 100) - 100, ln = 18 + rnd() * 37;
+      x.strokeStyle = `rgba(225,235,255,${(.14 + rnd() * .21).toFixed(2)})`; x.beginPath(); x.moveTo(px, py); x.lineTo(px + ln * .18, py + ln); x.stroke(); } x.restore(); }
+  x.save(); x.globalCompositeOperation = "multiply";
+  const vg = x.createRadialGradient(W * .55, H * .5, 0, W * .55, H * .5, W * .85); vg.addColorStop(0, "#fff"); vg.addColorStop(.55, "#d8d8d8"); vg.addColorStop(1, "#737373");
+  x.fillStyle = vg; x.fillRect(0, 0, W, H); x.restore();
+  const lg2 = x.createLinearGradient(0, 0, W * .62, 0); lg2.addColorStop(0, "rgba(5,8,15,.62)"); lg2.addColorStop(.5, "rgba(5,8,15,.25)"); lg2.addColorStop(1, "rgba(5,8,15,0)");
+  x.fillStyle = lg2; x.fillRect(0, 0, W, H);
+}
+const FONT = 'Roboto, "Segoe UI", "Arial Black", Arial, sans-serif';
+function fitText(x, text, maxW, maxH) {
+  const words = text.split(/\s+/).filter(Boolean), layouts = [[text]];
+  if (words.length >= 2) { let best = null, bd = 1e9; for (let i = 1; i < words.length; i++) { const a = words.slice(0, i).join(" "), b = words.slice(i).join(" ");
+    if (Math.abs(a.length - b.length) < bd) { best = [a, b]; bd = Math.abs(a.length - b.length); } } layouts.push(best); }
+  let res = null;
+  for (const lines of layouts) { let s = 170;
+    for (; s >= 40; s -= 4) { x.font = `900 ${s}px ${FONT}`; if (Math.max(...lines.map(l => x.measureText(l).width)) <= maxW && s * 1.08 * lines.length <= maxH) break; }
+    if (!res || s > res[0]) res = [s, lines]; }
+  return res;
+}
+function drawText(c, title, sub, acc) {
+  const x = c.getContext("2d"); title = title.trim().toUpperCase(); sub = sub.trim().toUpperCase();
+  const [size, lines] = title ? fitText(x, title, W * .56, H * .52) : [120, []];
+  const ss = Math.max(28, Math.min(54, Math.round(size * .36))), items = lines.map(l => [l, size, "#ffffff", size * 1.08]);
+  if (sub) items.push([sub, ss, acc, ss * 1.5]);
+  const total = items.reduce((s, it) => s + it[3], 0); let y = H * .47 - total / 2; const x0 = W * .055;
+  x.textBaseline = "top";
+  items.forEach(([t, s, col, lh], k) => { if (sub && title && k === items.length - 1) y += lh * .15;
+    x.font = `900 ${s}px ${FONT}`;
+    x.save(); x.shadowColor = "rgba(0,0,0,.85)"; x.shadowBlur = 18; x.shadowOffsetX = 4; x.shadowOffsetY = 6;
+    x.lineJoin = "round"; x.lineWidth = Math.max(3, s / 22); x.strokeStyle = "rgba(0,0,0,.6)"; x.strokeText(t, x0, y); x.restore();
+    x.fillStyle = col; x.fillText(t, x0, y); y += lh; });
+}
+$("#bThumb").onclick = () => run(async () => {
+  const st = STY[$("#tStyle").value], src = await sources(), out = $("#thumbs"); out.innerHTML = "";
+  for (let k = 0; k < 3; k++) {
+    const [c, note] = src[k], cc = mkCanvas(W, H); cc.getContext("2d").drawImage(c, 0, 0);
+    grade(cc, st, $("#tRain").checked, (+$("#tBright").value || 100) / 100, k);
+    drawText(cc, $("#tTitle").value, $("#tSub").value, st.acc);
+    const name = `${T.name}_thumbnail_${"ABC"[k]}.jpg`;
+    const fig = document.createElement("figure"); fig.dataset.name = name; const cap = document.createElement("figcaption"), btn = document.createElement("button");
+    cap.innerHTML = `<span>Variasi ${"ABC"[k]} <small class="info">(${note})</small></span>`; btn.textContent = "💾 Simpan";
+    btn.onclick = () => run(async () => { const bl = await new Promise(r => cc.toBlob(r, "image/jpeg", .92)); await saveBlob(bl, name, "image/jpeg"); });
+    cap.appendChild(btn); fig.appendChild(cap); fig.appendChild(cc);
+    const sm = mkCanvas(336, 189); sm.className = "small"; sm.getContext("2d").drawImage(cc, 0, 0, 336, 189);
+    const lab = document.createElement("div"); lab.className = "info"; lab.textContent = "Ukuran di HP:"; fig.appendChild(lab); fig.appendChild(sm);
+    out.appendChild(fig);
+    prog(.6 + .4 * (k + 1) / 3, "Thumbnail " + "ABC"[k] + " selesai"); await tick();
+  }
+  const all = document.createElement("button"); all.className = "btn sec"; all.textContent = "💾 Simpan ketiganya";
+  all.onclick = () => run(async () => { for (const f of out.querySelectorAll("figure")) { const cv = f.querySelector("canvas:not(.small)");
+    await saveBlob(await new Promise(r => cv.toBlob(r, "image/jpeg", .92)), f.dataset.name, "image/jpeg"); } });
+  out.appendChild(all);
+  prog(1, "✔ 3 thumbnail siap — tekan Simpan");
+});
+</script>
+</body>
+</html>
